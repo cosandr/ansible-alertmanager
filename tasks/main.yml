@@ -9,17 +9,20 @@
   become: true
   tags:
     - alertmanager_install
+    - install
 
 - import_tasks: selinux.yml
   become: true
   when: ansible_selinux.status == "enabled"
   tags:
     - alertmanager_configure
+    - install
 
 - include: configure.yml
   become: true
   tags:
     - alertmanager_configure
+    - configure
 
 - name: ensure alertmanager service is started and enabled
   become: true
