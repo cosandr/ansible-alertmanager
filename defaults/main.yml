@@ -17,6 +17,7 @@ alertmanager_http_config: {}
 
 alertmanager_resolve_timeout: 3m
 
+alertmanager_required_services: []
 alertmanager_config_flags_extra: {}
 # alertmanager_config_flags_extra:
 #   data.retention: 10
