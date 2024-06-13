@@ -26,13 +26,17 @@
     - "{{ alertmanager_db_dir }}"
     - "{{ _alertmanager_amtool_config_dir }}"
 
+- name: "Get checksum list"
+  ansible.builtin.set_fact:
+    __alertmanager_checksums: "{{ lookup('url', 'https://github.com/prometheus/alertmanager/releases/download/v' + alertmanager_version + '/sha256sums.txt', wantlist=True) | list }}"
+
 - block:
     - name: download alertmanager binary to local folder
       become: false
       get_url:
         url: "https://github.com/prometheus/alertmanager/releases/download/v{{ alertmanager_version }}/alertmanager-{{ alertmanager_version }}.linux-{{ go_arch }}.tar.gz"
         dest: "/tmp/alertmanager-{{ alertmanager_version }}.linux-{{ go_arch }}.tar.gz"
-        checksum: "sha256:{{ alertmanager_checksum }}"
+        checksum: "sha256:{{ (__alertmanager_checksums | select('search', 'linux-' + go_arch + '.tar.gz') | first).split()[0] }}"
       register: _download_archive
       until: _download_archive is succeeded
       retries: 5
